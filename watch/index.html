@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>LIST PRODUCT</h1>
+            <div class="iconCart">
+              <a href="checkout.html"><img src="icon.png" class="logo"></a>
+              <div class="totalQuantity">0</div>
+            </div>
+        </header>
+
+        <div class="listProduct">
+
+            <div class="item" data-id="1">
+                <img src="images/1.webp" alt="">
+                <h2>CoPilot / Black / Automatic</h2>
+                <div class="price">$550</div>
+                <button>Add To Cart</button>
+            </div>
+
+            <div class="item" data-id="2">
+                <img src="images/2.webp" alt="">
+                <h2>CoPilot / Black / Automatic</h2>
+                <div class="price">$550</div>
+                <button>Add To Cart</button>
+            </div>
+
+            <div class="item" data-id="3">
+                <img src="images/3.webp" alt="">
+                <h2>CoPilot / Black / Automatic</h2>
+                <div class="price">$550</div>
+                <button>Add To Cart</button>
+            </div>
+
+            <div class="item" data-id="4">
+                <img src="images/4.webp" alt="">
+                <h2>CoPilot / Black / Automatic</h2>
+                <div class="price">$550</div>
+                <button>Add To Cart</button>
+            </div>
+
+            <div class="item" data-id="5">
+                <img src="images/5.webp" alt="">
+                <h2>CoPilot / Black / Automatic</h2>
+                <div class="price">$550</div>
+                <button>Add To Cart</button>
+            </div>
+
+            <div class="item" data-id="6">
+                <img src="images/6.webp" alt="">
+                <h2>CoPilot / Black / Automatic</h2>
+                <div class="price">$550</div>
+                <button>Add To Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart">
+        <h2>CART</h2>
+        <div class="listCart"></div>
+        <div class="buttons">
+            <div class="close">CLOSE</div>
+            <div class="checkout">
+                <a href="checkout.html">CHECKOUT</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get the cart and product list elements
+        const cartElement = document.querySelector('.cart');
+        const productListElement = document.querySelector('.listProduct');
+
+        // Initialize the cart data
+        let cartData = [];
+
+        // Function to add a product to the cart
+        function addProductToCart(productId, productName, productPrice, productImage) {
+            const existingProduct = cartData.find(product => product.id === productId);
+            if (existingProduct) {
+                existingProduct.quantity++;
+            } else {
+                cartData.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    image: productImage,
+                    quantity: 1
+                });
+            }
+            updateCartDisplay();
+        }
+
+        // Function to update the cart display
+        function updateCartDisplay() {
+            const cartListElement = cartElement.querySelector('.listCart');
+            cartListElement.innerHTML = '';
+
+            cartData.forEach(product => {
+                const cartItemElement = document.createElement('div');
+                cartItemElement.classList.add('item');
+                cartItemElement.innerHTML = `
+                    <img src="${product.image}">
+                    <div class="content">
+                        <div class="name">${product.name}</div>
+                        <div class="price">$${product.price} / ${product.quantity} product(s)</div>
+                    </div>
+                    <div class="quantity">
+                        <button class="decrement">-</button>
+                        <span class="value">${product.quantity}</span>
+                        <button class="increment">+</button>
+                    </div>
+                `;
+                cartListElement.appendChild(cartItemElement);
+
+                const incrementButton = cartItemElement.querySelector('.increment');
+                const decrementButton = cartItemElement.querySelector('.decrement');
+                incrementButton.addEventListener('click', () => {
+                    product.quantity++;
+                    updateCartDisplay();
+                });
+                decrementButton.addEventListener('click', () => {
+                    if (product.quantity > 1) {
+                        product.quantity--;
+                    } else {
+                        cartData = cartData.filter(item => item.id !== product.id);
+                    }
+                    updateCartDisplay();
+                });
+            });
+
+            const totalQuantityElement = document.querySelector('.totalQuantity');
+            totalQuantityElement.textContent = cartData.reduce((total, product) => total + product.quantity, 0);
+        }
+
+        // Add event listeners to the "Add to Cart" buttons
+        productListElement.addEventListener('click', event => {
+            if (event.target.tagName === 'BUTTON') {
+                const productElement = event.target.parentNode;
+                const productId = productElement.dataset.id;
+                const productName = productElement.querySelector('h2').textContent;
+                const productPrice = parseFloat(productElement.querySelector('.price').textContent.replace('$', ''));
+                const productImage = productElement.querySelector('img').src;
+                addProductToCart(productId, productName, productPrice, productImage);
+            }
+        });
+
+        // Toggle the cart display
+        const logo = document.querySelector('.logo');
+        const closeButton = document.querySelector('.close');
+
+        logo.addEventListener('click', () => {
+            cartElement.classList.toggle('show');
+        });
+
+        closeButton.addEventListener('click', () => {
+            cartElement.classList.remove('show');
+        });
+    </script>
+</body>
+</html>
